@@ -1,32 +1,44 @@
-def hex_to_utf8(input_file):
+def decode_hex_to_text(hex_string):
+    """
+    Tenta decodificar uma string hexadecimal usando diferentes codificações"""
+
+    # Remove espaços em branco e quebras de linha
+    hex_string = hex_string.strip()
+    
+    # Converte hex para bytes
     try:
-        # Abre o arquivo de entrada para leitura
-        with open(input_file, 'r') as infile:
-            hex_data = infile.read().strip()  # Lê o conteúdo e remove espaços em branco extras
-
-        # Converte o conteúdo hexadecimal para bytes
+        byte_data = bytes.fromhex(hex_string)
+    except ValueError as e:
+        return f"Erro ao converter hex: {e}"
+    
+    # Lista de codificações para tentar
+    encodings = ['utf-8', 'latin1', 'iso-8859-1', 'ascii']
+    
+    results = {}
+    
+    # Tenta cada codificação
+    for encoding in encodings:
         try:
-            byte_data = bytes.fromhex(hex_data)
-        except ValueError:
-            print("Erro: O arquivo contém dados que não são válidos em hexadecimal.")
-            return
-
-        # Decodifica os bytes para string UTF-8
-        try:
-            utf8_text = byte_data.decode('utf-8')
+            decoded_text = byte_data.decode(encoding)
+            results[encoding] = decoded_text
         except UnicodeDecodeError:
-            print("Erro: Os dados não são válidos no formato UTF-8.")
-            return
+            results[encoding] = f"Não foi possível decodificar usando {encoding}"
+    
+    return results
 
-        # Imprime o texto UTF-8 na tela
-        print(utf8_text)
-
-    except FileNotFoundError:
-        print(f"Erro: O arquivo {input_file} não foi encontrado.")
-    except Exception as e:
-        print(f"Erro inesperado: {e}")
-
-# Exemplo de uso
+def main():
+    # Lê o arquivo hex
+    with open('arquivo-strong-7.in-full.hex', 'r') as f:
+        hex_content = f.read()
+    
+    # Decodifica o conteúdo
+    results = decode_hex_to_text(hex_content)
+    
+    # Imprime os resultados
+    print("Resultados da decodificação:\n")
+    for encoding, text in results.items():
+        print(f"\n=== Decodificação usando {encoding} ===\n")
+        print(text)
+        print("\n" + "="*50 + "\n")
 if __name__ == "__main__":
-    entrada = "arquivo-strong-7.in-full.hex"
-    hex_to_utf8(entrada)
+    main()
