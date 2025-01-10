@@ -12,7 +12,7 @@ def decode_hex_to_text(hex_string):
         return f"Erro ao converter hex: {e}"
     
     # Lista de codificações para tentar
-    encodings = ['utf-8', 'latin1', 'iso-8859-1', 'ascii']
+    encodings = ['utf-8', 'latin1', 'iso-8859-1', 'ascii' ]
     
     results = {}
     
